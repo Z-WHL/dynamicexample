@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+
+   <extension
+         point="org.eclipse.ui.editors">
+      <editor
+            name="Config Editor"
+            extensions="json"
+            icon="icons/sample.png"
+            contributorClass="com.windhoverlabs.ide.config.ConfigEditorContributor"
+            class="com.windhoverlabs.ide.config.ConfigEditor"
+            id="com.windhoverlabs.ide.config.ConfigEditor">
+      </editor>
+   </extension>
+   <extension
+         point="org.eclipse.ui.newWizards">
+      <category
+            name="Sample Wizards"
+            id="AirlinerIDE">
+      </category>
+      <wizard
+            name="Multi-page Editor file"
+            icon="icons/sample.png"
+            category="AirlinerIDE"
+            class="com.windhoverlabs.ide.wizards.SampleNewWizard"
+            id="com.windhoverlabs.ide.wizards.SampleNewWizard">
+      </wizard>
+   </extension>
+
+</plugin>
