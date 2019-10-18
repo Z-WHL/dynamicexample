@@ -108,16 +108,11 @@ public class ConfigTreeViewer extends TreeViewer implements ISelectionChangedLis
 		IStructuredSelection thisStructuredSelection = (IStructuredSelection) thisSelection;
 		Object selectedNode = thisStructuredSelection.getFirstElement();
 
-		if (selectedNode != null && !thisSelection.equals(selection)) {
-			
+		if (selectedNode != null) {
 			NamedObject selectedNamedObject = (NamedObject) selectedNode; 
 			JsonElement selectedElement = (JsonElement) selectedNamedObject.getObject();
 			if (selectedElement.isJsonObject()) {
-				if (selectedElement.getAsJsonObject().has("_config_wizard")) {
-					parentModuleConfigEditor.goUpdateCustomEditor(selectedNamedObject);
-				} else {
-					parentModuleConfigEditor.goUpdateKeyValueTable(selectedNamedObject);
-				}
+				parentModuleConfigEditor.goUpdate(selectedNamedObject, selectedElement);
 			}
 		}
 	}

@@ -75,8 +75,6 @@ public class ConfigEditor extends MultiPageEditorPart implements IResourceChange
 		firePropertyChange(IEditorPart.PROP_DIRTY);
 		
 	}
-	
-
 	/**
 	 * Creates the pages of the multi-page editor.
 	 */

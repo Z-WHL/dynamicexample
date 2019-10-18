@@ -27,5 +27,20 @@
             id="com.windhoverlabs.ide.wizards.SampleNewWizard">
       </wizard>
    </extension>
+   <extension
+         point="org.eclipse.ui.preferencePages">
+      <page
+            class="com.windhoverlabs.ide.config.CFSPreferencePage"
+            id="com.windhoverlabs.ide.config.CFSPreferencePage"
+            name="CFS Preferences">
+      </page>
+   </extension>
+   <extension
+         point="org.eclipse.core.runtime.preferences">
+      <initializer
+            class="com.windhoverlabs.ide.config.PreferenceInitializer">
+      </initializer>
+   </extension>
+
 
 </plugin>
