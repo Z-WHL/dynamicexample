@@ -6,27 +6,85 @@ import java.lang.reflect.Method;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLClassLoader;
+import java.util.ArrayList;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
 
 public class DynamicClassLoader {
 
-	private static ClassLoader classLoader;
-	private static Class<?> initiator;
 	
 	// Function will check if the class is in the jars that have been loaded.
 	public static boolean verifyClassExistence(String className, Composite parent) {	
 		try {
+			URL jarFile = new URL("file://"+className);
+			ClassLoader classLoader = URLClassLoader.newInstance(new URL[] {jarFile}, parent.getClass().getClassLoader());
+
 			Class.forName(className, false, classLoader);
 			return true;
-		} catch (ClassNotFoundException e) {
+		} catch (ClassNotFoundException | MalformedURLException e) {
 			return false;
 		}	
 	}
 	
 	// Initiates the class loader and loads the jar classes.
-	public static boolean setUp(String jarPath, String classPath, Composite parent) {
+	public static boolean setUp(String jarPath, String classPath, ArrayList<String> classPaths, Composite parent) {
+		if (classPaths.size() > 0) {
+			try {
+				// Create an array of the custom classes.
+				Object[] classPathsObjects = classPaths.toArray();
+				String[] classPathStrings = new String[classPathsObjects.length];
+				System.out.println(classPathStrings[0]);
+				for (int i = 0; i < classPathsObjects.length; i++) {
+					classPathStrings[i] = (String) classPathsObjects[i];
+					System.out.println(classPathStrings[i]);
+				}
+				
+				// We are assured there is at least one class.
+				URL jarFile = new URL("file://"+classPathStrings[0]);
+			
+				ClassLoader classLoader = URLClassLoader.newInstance(new URL[] {jarFile}, parent.getClass().getClassLoader());
+				
+				String currentSelection = "com.windhoverlabs.airliner.apps.sch.Initiator";
+			
+				Class<?> initiator = Class.forName(currentSelection, true, classLoader);
+				
+				
+				Object[] arguments = new Object[1];
+				String[] argumentString = new String[classPathsObjects.length + 1];
+				argumentString[0] = jarPath;
+				
+				for (int i = 0; i < classPathsObjects.length; i++) {
+					argumentString[i +  1] = classPathStrings[i];
+				}
+				
+				arguments[0] = argumentString;
+				
+				Method mainMethod = initiator.getMethod("main", String[].class);
+				mainMethod.invoke(null,  arguments);
+				return true;
+			} catch (ClassNotFoundException e) {
+				e.printStackTrace();
+				return false;
+			} catch (NoSuchMethodException | SecurityException e) {
+				e.printStackTrace();
+
+				return false;
+			} catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
+				e.printStackTrace();
+
+				return false;
+			} catch (MalformedURLException e) {
+				e.printStackTrace();
+
+				return false;
+			}
+		} else {
+			// Class paths were empty. Not necessary to load classes!
+			return false;
+		}
+		
+		/*
 		try {
 			URL jarFile = new URL("file://"+classPath);
 			classLoader = URLClassLoader.newInstance(new URL[] {jarFile}, parent.getClass().getClassLoader());
@@ -47,6 +105,7 @@ public class DynamicClassLoader {
 		} catch (MalformedURLException e) {
 			return false;
 		}
+		*/
 		
 	}
 	
@@ -54,6 +113,10 @@ public class DynamicClassLoader {
 	public static Composite createCustomClass(NamedObject currentNamedObject, String className, Composite parent){
 		Composite returned = null;
 		try {
+			URL jarFile = new URL("file://"+className);
+
+			ClassLoader classLoader = URLClassLoader.newInstance(new URL[] {jarFile}, parent.getClass().getClassLoader());
+
 			Class<?> theComposite  = Class.forName(className, true, classLoader);
 			Class<? extends Composite> compositeClass = theComposite.asSubclass(Composite.class);
 			Constructor<? extends Composite> constructor = compositeClass.getConstructor(Composite.class, int.class);
@@ -63,6 +126,9 @@ public class DynamicClassLoader {
 		} catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
 			e.printStackTrace();
 		} catch (InstantiationException e) {
+			e.printStackTrace();
+		} catch (MalformedURLException e) {
+			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} 
 		return returned;

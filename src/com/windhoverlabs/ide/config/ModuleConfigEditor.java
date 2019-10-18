@@ -75,10 +75,11 @@ public class ModuleConfigEditor extends SashForm implements ICfsConfigChangeList
 			String[] files = fileList.split(":");
 			for (int i = 0; i < files.length; i++) {
 				classPaths.add(files[i]);
+				System.out.println(classPaths.indexOf(i));
 			}
 		}
 		
-		loaded = DynamicClassLoader.setUp(jarPath, classPath, copy);
+		loaded = DynamicClassLoader.setUp(jarPath, classPath, classPaths, copy);
 		if (!loaded) {
 			System.out.println("The SWT Jars or Class Jar paths are incorrect and were not loaded");
 		}
@@ -97,7 +98,7 @@ public class ModuleConfigEditor extends SashForm implements ICfsConfigChangeList
 					}
 					classPaths = classJars;
 				}
-				loaded = DynamicClassLoader.setUp(jarPath, classPath, copy);
+				loaded = DynamicClassLoader.setUp(jarPath, classPath, classPaths, copy);
 				if (!loaded) {
 					// Do error checking
 					System.out.println("The SWT Jars or Class Jar paths are incorrect and were not loaded");
