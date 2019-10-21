@@ -17,7 +17,6 @@ import org.eclipse.swt.widgets.Composite;
 public class DynamicClassLoader {
 
 	private static URLClassLoader classLoader;
-	//private static HashMap<String, URLClassLoader> classLoaders = new HashMap<>();
 	
 	/**
 	 * Initiates the class loader and loads the jar classes.
@@ -108,53 +107,4 @@ public class DynamicClassLoader {
 		return returned;
 	}
 	
-	/*
-	public static boolean setUp(ArrayList<String> classPaths) {
-		if (classPaths.size() > 0) {
-			try {
-				// Iterate through our list of jar names to create a mapping of class names and class loaders.
-				for (int i = 0; i < classPaths.size(); i++) {
-					String jarName = String.valueOf(classPaths.get(i));
-					URL jarAsURL = new URL("file://" + jarName);
-					URLClassLoader oneClassLoader = URLClassLoader.newInstance(new URL[] { jarAsURL }, Composite.class.getClassLoader());
-					classLoaders.put(jarName, oneClassLoader);
-				} 
-				return true;
-			}catch (MalformedURLException e) {
-				e.printStackTrace();
-				return false;
-			}
-		} else {
-			return false;
-		}
-	}
-	
-	public static void updateHashSet(ArrayList<String> updatedClassPaths) {
-		// Remove from map of class loaders.
-		for (Entry<String, URLClassLoader> entry : classLoaders.entrySet()) {
-			if (!updatedClassPaths.contains(entry.getKey())) {
-				URLClassLoader oneClassLoader = entry.getValue();
-				try {
-					oneClassLoader.close();
-					classLoaders.remove(entry.getKey());
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
-			}
-		}
-		
-		updatedClassPaths.forEach( (key) -> {
-			if (!classLoaders.containsKey(key)) {
-				URL jarAsURL;
-				try {
-					jarAsURL = new URL("file://" + key);
-					URLClassLoader oneClassLoader = URLClassLoader.newInstance(new URL[] { jarAsURL }, Composite.class.getClassLoader());
-					classLoaders.put(key, oneClassLoader);
-				} catch (MalformedURLException e) {
-					e.printStackTrace();
-				}
-			}
-		});
-	} */
-
 }

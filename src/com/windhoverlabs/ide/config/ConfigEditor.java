@@ -92,7 +92,6 @@ public class ConfigEditor extends MultiPageEditorPart implements IResourceChange
         
 		/* Iterate through the modules and add pages for them. */
         JsonObject modules = cfsConfig.getJsonObjectByPath("modules");
-        System.out.println(JsonObjectsUtil.beautifyJson(modules.toString()));
         for (Map.Entry<String,JsonElement> entry : modules.entrySet()) {
         	if (entry.getValue().isJsonObject()) {
 	        	String moduleKey = entry.getKey();
