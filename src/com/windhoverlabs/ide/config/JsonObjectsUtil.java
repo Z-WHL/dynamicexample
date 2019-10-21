@@ -185,9 +185,9 @@ public class JsonObjectsUtil {
 					tempElement = destinationJO.get(entry.getKey());
 				}
 				merge(entry.getValue().getAsJsonObject(), tempElement);				
-			} else {
+			} else if (entry.getValue().isJsonPrimitive()) {
 				destinationJO.addProperty(entry.getKey(), entry.getValue().getAsString());
-			}
+			} 
 		}
 		
 		destinationJE = (JsonElement) destinationJO;

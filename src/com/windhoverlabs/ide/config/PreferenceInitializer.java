@@ -17,8 +17,6 @@ public class PreferenceInitializer extends AbstractPreferenceInitializer {
 	 */
 	public void initializeDefaultPreferences() {
 		IPreferenceStore store = ContextManager.getDefault().getPreferenceStore();
-		store.setDefault(PreferenceConstants.SWT_PATH, "/home/vagrant/development/eclipse/plugins/org.eclipse.swt.gtk.linux.x86_64_3.106.3.v20180329-0507.jar");
-		store.setDefault(PreferenceConstants.CUSTOM_CLASS_PATH, "/home/vagrant/development/airliner/apps/sch/classes.jar");
 
 	}
 }

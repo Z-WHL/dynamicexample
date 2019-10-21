@@ -1,24 +1,25 @@
 package com.windhoverlabs.ide.config;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.StringTokenizer;
 
 import org.eclipse.jface.preference.PathEditor;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.FileDialog;
 
-public class FilesEditor extends PathEditor {
+public class JarFilePciker extends PathEditor {
 	
 	private String lastPath;
 	
-	protected FilesEditor() {
+	protected JarFilePciker() {
 	}
 	
-	public FilesEditor(String name, String labelText, String dirChooserLabelText, Composite parent) {
+	public JarFilePciker(String name, String labelText, String dirChooserLabelText, Composite parent) {
 		init(name, labelText);
 		createControl(parent);
 	}
-
 	
 	@Override
 	protected String getNewInputObject() {
@@ -28,19 +29,22 @@ public class FilesEditor extends PathEditor {
 				dialog.setFilterPath(lastPath);
 			}
 		}
+		
 		File files = null;
 		String file = dialog.open();
-		String returned = null;
+		String returned = "";
 		
 		if (file != null) {
 			file = file.trim();
+			File f = new File(file);
+			lastPath = f.getParent();
+			
 			if (file.length() > 0) {
 				files = new File(file);
 				returned = files.getAbsolutePath();
-			}
-			lastPath = files.getParent();
+			} 
+			
 		}
 		return returned;
 	}
-
 }

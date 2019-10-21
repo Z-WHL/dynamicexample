@@ -23,11 +23,7 @@ public class ModuleConfigEditor extends SashForm implements ICfsConfigChangeList
 	private Composite editor;
 	private CfsConfig cfsConfig;
 	private NamedObject currentRightObject;
-	private JsonElement currentRightElement;
-	private Composite copy;
 	private boolean loaded;
-	private String jarPath;
-	private String classPath;
 	private ArrayList<String> classPaths = new ArrayList<String>();
 	
 	
@@ -39,7 +35,6 @@ public class ModuleConfigEditor extends SashForm implements ICfsConfigChangeList
 	public ModuleConfigEditor(Composite parent, int style, String jsonPath, CfsConfig cfsConfig, String moduleName) {
 		super(parent, style);
 		this.cfsConfig = cfsConfig;
-		this.copy = ModuleConfigEditor.this;
 		
 		addDisposeListener(new DisposeListener() {
 			public void widgetDisposed(DisposeEvent e) {
@@ -68,26 +63,22 @@ public class ModuleConfigEditor extends SashForm implements ICfsConfigChangeList
 	 */
 	private void setUpPreferences() {
 		IPreferenceStore store = ContextManager.getDefault().getPreferenceStore();
-		classPath = store.getString(PreferenceConstants.CUSTOM_CLASS_PATH);
 		String fileList = store.getString(PreferenceConstants.CUSTOM_CLASS_PATHS);
 		if (fileList.length() > 0) {
 			String[] files = fileList.split(":");
 			for (int i = 0; i < files.length; i++) {
 				classPaths.add(files[i]);
-				System.out.println(classPaths.indexOf(i));
 			}
 		}
 		
-		loaded = DynamicClassLoader.setUp(classPath, classPaths);
+		loaded = DynamicClassLoader.setUpNew(classPaths);
 		if (!loaded) {
 			System.out.println("The SWT Jars or Class Jar paths are incorrect and were not loaded");
 		}
 		store.addPropertyChangeListener(new IPropertyChangeListener() {
 			@Override
 			public void propertyChange(PropertyChangeEvent event) {
-				if (event.getProperty() == PreferenceConstants.CUSTOM_CLASS_PATH) {
-					classPath = event.getNewValue().toString();
-				} else if (event.getProperty() == PreferenceConstants.CUSTOM_CLASS_PATHS) {
+				if (event.getProperty() == PreferenceConstants.CUSTOM_CLASS_PATHS) {
 					String[] files = ((String)event.getNewValue()).split(":");
 					ArrayList<String> classJars = new ArrayList<>();
 					for (int i = 0; i < files.length; i++) {
@@ -95,7 +86,7 @@ public class ModuleConfigEditor extends SashForm implements ICfsConfigChangeList
 					}
 					classPaths = classJars;
 				}
-				loaded = DynamicClassLoader.setUp(classPath, classPaths);
+				loaded = DynamicClassLoader.setUpNew(classPaths);
 				if (!loaded) {
 					// Do error checking
 					System.out.println("The SWT Jars or Class Jar paths are incorrect and were not loaded");
@@ -138,7 +129,6 @@ public class ModuleConfigEditor extends SashForm implements ICfsConfigChangeList
 	public void goUpdateKeyValueTable(NamedObject selectedObject) {
 		// Update the objects associated with the selection.
 		this.currentRightObject = selectedObject;
-		this.currentRightElement = (JsonElement) selectedObject.getObject();	
 		
 		if (editor != null) {
 			if (editor instanceof KeyValueTable) {

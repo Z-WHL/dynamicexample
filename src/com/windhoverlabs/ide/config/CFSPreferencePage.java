@@ -38,9 +38,7 @@ public class CFSPreferencePage
 	 * restore itself.
 	 */
 	public void createFieldEditors() {
-		addField(new FileFieldEditor(PreferenceConstants.SWT_PATH, "&SWT Jar File preference:", getFieldEditorParent()));
-		addField(new FileFieldEditor(PreferenceConstants.CUSTOM_CLASS_PATH, "&Class Jar File preference:", getFieldEditorParent()));
-		addField(new FilesEditor(PreferenceConstants.CUSTOM_CLASS_PATHS, "&Custom Class Jars", "Select Jar:", getFieldEditorParent()));
+		addField(new JarFilePciker(PreferenceConstants.CUSTOM_CLASS_PATHS, "&Custom Class Jars", "Select Jar:", getFieldEditorParent()));
 
 	}
 

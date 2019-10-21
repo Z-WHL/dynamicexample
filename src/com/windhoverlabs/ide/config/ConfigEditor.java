@@ -86,13 +86,13 @@ public class ConfigEditor extends MultiPageEditorPart implements IResourceChange
 		pathName = f.getAbsolutePath();
 		cfsConfig = JsonObjectsUtil.goMerge(new File(pathName));
         cfsConfig.setPath(pathName);
-        
         cfsConfig.addChangeListener(this);
         /* Add the CFE page. */
 		addCFEPage();
         
 		/* Iterate through the modules and add pages for them. */
-        JsonObject modules = cfsConfig.getJsonObjectByPath("modules");        
+        JsonObject modules = cfsConfig.getJsonObjectByPath("modules");
+        System.out.println(JsonObjectsUtil.beautifyJson(modules.toString()));
         for (Map.Entry<String,JsonElement> entry : modules.entrySet()) {
         	if (entry.getValue().isJsonObject()) {
 	        	String moduleKey = entry.getKey();
