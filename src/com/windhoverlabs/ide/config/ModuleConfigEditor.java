@@ -68,7 +68,6 @@ public class ModuleConfigEditor extends SashForm implements ICfsConfigChangeList
 	 */
 	private void setUpPreferences() {
 		IPreferenceStore store = ContextManager.getDefault().getPreferenceStore();
-		jarPath = store.getString(PreferenceConstants.SWT_PATH);
 		classPath = store.getString(PreferenceConstants.CUSTOM_CLASS_PATH);
 		String fileList = store.getString(PreferenceConstants.CUSTOM_CLASS_PATHS);
 		if (fileList.length() > 0) {
@@ -79,16 +78,14 @@ public class ModuleConfigEditor extends SashForm implements ICfsConfigChangeList
 			}
 		}
 		
-		loaded = DynamicClassLoader.setUp(jarPath, classPath, classPaths, copy);
+		loaded = DynamicClassLoader.setUp(classPath, classPaths);
 		if (!loaded) {
 			System.out.println("The SWT Jars or Class Jar paths are incorrect and were not loaded");
 		}
 		store.addPropertyChangeListener(new IPropertyChangeListener() {
 			@Override
 			public void propertyChange(PropertyChangeEvent event) {
-				if (event.getProperty() == PreferenceConstants.SWT_PATH) {
-					jarPath = event.getNewValue().toString();
-				} else if (event.getProperty() == PreferenceConstants.CUSTOM_CLASS_PATH) {
+				if (event.getProperty() == PreferenceConstants.CUSTOM_CLASS_PATH) {
 					classPath = event.getNewValue().toString();
 				} else if (event.getProperty() == PreferenceConstants.CUSTOM_CLASS_PATHS) {
 					String[] files = ((String)event.getNewValue()).split(":");
@@ -98,7 +95,7 @@ public class ModuleConfigEditor extends SashForm implements ICfsConfigChangeList
 					}
 					classPaths = classJars;
 				}
-				loaded = DynamicClassLoader.setUp(jarPath, classPath, classPaths, copy);
+				loaded = DynamicClassLoader.setUp(classPath, classPaths);
 				if (!loaded) {
 					// Do error checking
 					System.out.println("The SWT Jars or Class Jar paths are incorrect and were not loaded");
@@ -119,7 +116,7 @@ public class ModuleConfigEditor extends SashForm implements ICfsConfigChangeList
 			String className = wizardObject.get("class").getAsString();
 			
 			// Check whether the Custom class has been loaded
-			boolean verified = DynamicClassLoader.verifyClassExistence(className, this);
+			boolean verified = DynamicClassLoader.verifyClassExistence(className);
 			if (verified && loaded) {
 				// The custom class exists, so load it.
 				goUpdateCustomEditor(selectedNamedObject);

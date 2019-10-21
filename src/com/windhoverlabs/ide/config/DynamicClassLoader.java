@@ -13,22 +13,21 @@ import org.eclipse.swt.widgets.Composite;
 
 public class DynamicClassLoader {
 
+	private static ClassLoader classLoader;
 	
 	// Function will check if the class is in the jars that have been loaded.
-	public static boolean verifyClassExistence(String className, Composite parent) {	
+	public static boolean verifyClassExistence(String className) {	
 		try {
-			URL jarFile = new URL("file://"+className);
-			ClassLoader classLoader = URLClassLoader.newInstance(new URL[] {jarFile}, parent.getClass().getClassLoader());
-
 			Class.forName(className, false, classLoader);
 			return true;
-		} catch (ClassNotFoundException | MalformedURLException e) {
+		} catch (ClassNotFoundException e) {
 			return false;
 		}	
 	}
 	
 	// Initiates the class loader and loads the jar classes.
-	public static boolean setUp(String jarPath, String classPath, ArrayList<String> classPaths, Composite parent) {
+	public static boolean setUp(String classPath, ArrayList<String> classPaths) {
+		/*
 		if (classPaths.size() > 0) {
 			try {
 				// Create an array of the custom classes.
@@ -84,7 +83,7 @@ public class DynamicClassLoader {
 			return false;
 		}
 		
-		/*
+		
 		try {
 			URL jarFile = new URL("file://"+classPath);
 			classLoader = URLClassLoader.newInstance(new URL[] {jarFile}, parent.getClass().getClassLoader());
@@ -104,19 +103,34 @@ public class DynamicClassLoader {
 			return false;
 		} catch (MalformedURLException e) {
 			return false;
-		}
-		*/
+		}*/
 		
+		try {
+			URL jarFile = new URL("file://"+classPath);
+
+			classLoader = URLClassLoader.newInstance(new URL[] {jarFile}, Composite.class.getClassLoader());
+
+			Class<?> urlClass = URLClassLoader.class;
+			Method method = urlClass.getDeclaredMethod("addURL", new Class[] { URL.class });
+			method.setAccessible(true);
+
+			method.invoke(classLoader, new Object[] { jarFile });
+			
+			return true;
+		} catch (NoSuchMethodException | SecurityException e) {
+			return false;
+		} catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
+			return false;
+		} catch (MalformedURLException e) {
+			return false;
+		}
 	}
 	
 	// Retrieves the Class from the loaded jars. The function that calls this should first check if it contains the class.
 	public static Composite createCustomClass(NamedObject currentNamedObject, String className, Composite parent){
 		Composite returned = null;
 		try {
-			URL jarFile = new URL("file://"+className);
-
-			ClassLoader classLoader = URLClassLoader.newInstance(new URL[] {jarFile}, parent.getClass().getClassLoader());
-
+			
 			Class<?> theComposite  = Class.forName(className, true, classLoader);
 			Class<? extends Composite> compositeClass = theComposite.asSubclass(Composite.class);
 			Constructor<? extends Composite> constructor = compositeClass.getConstructor(Composite.class, int.class);
@@ -126,9 +140,6 @@ public class DynamicClassLoader {
 		} catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
 			e.printStackTrace();
 		} catch (InstantiationException e) {
-			e.printStackTrace();
-		} catch (MalformedURLException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} 
 		return returned;
