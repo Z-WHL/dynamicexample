@@ -7,9 +7,6 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Map.Entry;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
@@ -72,14 +69,7 @@ public class DynamicClassLoader {
 			return true;
 		} catch (ClassNotFoundException e) {
 			return false;
-		}	
-		
-		/*
-		if (classLoaders.containsKey(className)) {
-			return true;
-		} else {
-			return false;
-		} */
+		}
 	}
 	
 	/**
@@ -106,5 +96,4 @@ public class DynamicClassLoader {
 		} 
 		return returned;
 	}
-	
 }
